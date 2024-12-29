@@ -3,7 +3,7 @@ import numpy as np
 from typing import Any, Dict, List, Optional
 from queue import Queue
 from threading import Lock
-from .word2vec import SimpleWord2Vec
+from word2vec import SimpleWord2Vec
 
 class DauntlessDB:
     """
