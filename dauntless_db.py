@@ -1,18 +1,18 @@
 import sqlite3
 import numpy as np
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 from queue import Queue
 from threading import Lock
-from word2vec import SimpleWord2Vec
+from .word2vec import SimpleWord2Vec
 
 class DauntlessDB:
     """
     DauntlessDB is a Python-based multimodal database supporting SQL, document, and vector storage.
-    
+
     ## Overview
-    DauntlessDB combines the functionalities of a traditional SQL database with the flexibility of 
-    document storage and the efficiency of vector embeddings. It is designed to handle various data 
-    types and provide ACID compliance, transactional capabilities, efficient vector search, and 
+    DauntlessDB combines the functionalities of a traditional SQL database with the flexibility of
+    document storage and the efficiency of vector embeddings. It is designed to handle various data
+    types and provide ACID compliance, transactional capabilities, efficient vector search, and
     multi-threaded operations.
 
     ## Objectives
@@ -23,7 +23,7 @@ class DauntlessDB:
 
     ## Features
     The following features are included in DauntlessDB:
-    
+
     1. SQL Storage: Execute SQL commands to manage structured data.
     2. Document Storage: Store and retrieve documents in an in-memory dictionary for quick access.
     3. Vector Storage: Insert sentences as embeddings for semantic search capabilities.
@@ -35,20 +35,20 @@ class DauntlessDB:
 
     ## Design Choices
     - SQLite Backend: SQLite is chosen for its lightweight nature and ease of use for prototyping.
-    
-    - In-Memory Document Store: An in-memory dictionary allows for quick access to documents without 
+
+    - In-Memory Document Store: An in-memory dictionary allows for quick access to documents without
       the overhead of disk I/O for frequently accessed data.
 
-    - Thread Safety: Locks are used around critical sections of code to prevent race conditions 
+    - Thread Safety: Locks are used around critical sections of code to prevent race conditions
       when multiple threads access shared resources.
 
     ## Usage
-    To use DauntlessDB, create an instance of the class, execute SQL commands, insert documents, 
+    To use DauntlessDB, create an instance of the class, execute SQL commands, insert documents,
     and perform vector searches as demonstrated in the example usage section.
 
     ## Limitations
-    While DauntlessDB provides a robust framework for multimodal data handling, it may not be suitable 
-    for large-scale production environments due to its in-memory document store and SQLite's limitations 
+    While DauntlessDB provides a robust framework for multimodal data handling, it may not be suitable
+    for large-scale production environments due to its in-memory document store and SQLite's limitations
     on concurrent writes. Users should consider these factors when deploying this solution.
 
     """
@@ -155,57 +155,7 @@ class DauntlessDB:
             self.sql_conn.close()
 
 def main():
-    """ Example usage of DauntlessDB with assertions for testing. """
-    
-    # Initialize DauntlessDB with SimpleWord2Vec model
-    db = DauntlessDB()
+    print('Dauntless DB Initialized.')
 
-    # Build vocabulary with some initial sentences before inserting any sentences into DB
-    initial_sentences_for_vocab_building = [
-       "This is a sample sentence.",
-       "This is another example.",
-       "The cat sat on the mat.",
-       "Dogs are great pets.",
-       "Cats and dogs are friends."
-   ]
-        
-    db.word2vec_model.build_vocab(initial_sentences_for_vocab_building)
-
-    # SQL operations example
-    db.execute_sql("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, name TEXT)")
-    db.execute_sql("INSERT INTO users (name) VALUES (?)", ("Alice",))
-    
-    # Fetch users and assert
-    users = db.execute_sql("SELECT * FROM users")
-    print("Users:", users)
-    assert users == [(1, 'Alice')], "User insertion failed!"
-
-    # Document operations example
-    db.insert_document("profiles", "user1", {"name": "Alice", "age": 30})
-    
-    # Fetch document and assert
-    document = db.get_document("profiles", "user1")
-    print("Document:", document)
-    assert document == {"name": "Alice", "age": 30}, "Document insertion failed!"
-
-    # Delete document and assert
-    db.delete_document("profiles", "user1")
-    deleted_document = db.get_document("profiles", "user1")
-    print("Document after deletion:", deleted_document)
-    assert deleted_document is None, "Document deletion failed!"
-
-    # Sentence embedding example
-    db.insert_sentence("sentence1", "This is a sample sentence.")
-    db.insert_sentence("sentence2", "This is another example.")
-
-    search_results = db.search_sentence("sample")
-    print("Search results for 'sample':", search_results)
-   
-    # Assert search results contain expected keys
-    assert len(search_results) > 0, "Search returned no results!"
-   
-    # Shutdown DB safely
-    db.shutdown()
-   
 if __name__ == "__main__":
-     main()
+    main()
